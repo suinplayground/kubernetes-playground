@@ -1,0 +1,8 @@
+apiVersion: suin.jp/v1alpha1
+kind: MyConfigMap
+metadata:
+  name: example-configmap
+spec:
+  data:
+    key1: value1
+    key2: value2

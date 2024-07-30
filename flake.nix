@@ -18,6 +18,7 @@
           	just
             crossplane-cli
             k3d
+            kind
             kubectl
             kubernetes-helm
             tilt
