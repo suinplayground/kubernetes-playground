@@ -1,0 +1,12 @@
+apiVersion: github.upbound.io/v1beta1
+kind: ProviderConfig
+metadata:
+  name: github-provider
+  namespace: default
+spec:
+  credentials:
+    source: Secret
+    secretRef:
+      name: github-secret
+      namespace: default
+      key: credentials
