@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="YamllintSettings">
+    <enabled>true</enabled>
+    <binPath>/nix/store/2q8hpb88sqjmr26fq5jx5w53y04cg3jp-python3.12-yamllint-1.35.1/bin/yamllint</binPath>
+  </component>
+</project>
