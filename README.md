@@ -49,6 +49,8 @@ kubectl apply -f 03-create-config-map-from-claim/myconfigmap-composition.yaml
 kubectl apply -f 03-create-config-map-from-claim/myconfigmap-claim.yaml
 ```
 
+See also "Demo 6: Create a config map from a composite resource" for an alternative way to create a config map.
+
 ### Demo 4: Create a GitHub repository from a managed resource
 
 Prerequisites:
@@ -101,6 +103,18 @@ To remove the created demo repository from GitHub, please delete the claim:
 ```shell
 kubectl delete repository repo2
 ````
+
+### Demo 6: Create a config map from a composite resource
+
+This demo creates a config map by directly creating a composite resource without going through a claim.
+
+```shell
+just install-kubernetes-provider
+just setup-kubernetes-provider-config
+kubectl apply -f 03-create-config-map-from-claim/myconfigmap-definition.yaml
+kubectl apply -f 03-create-config-map-from-claim/myconfigmap-composition.yaml
+kubectl apply -f 06-create-config-map-from-composite-resource/xconfigmap-composite-resource.yaml
+```
 
 ## Tear down
 

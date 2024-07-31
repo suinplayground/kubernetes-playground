@@ -1,0 +1,10 @@
+apiVersion: suin.jp/v1alpha1
+kind: XConfigMap
+metadata:
+  name: example-configmap-2
+spec:
+  compositionRef:
+    name: xconfigmaps.suin.jp
+  data:
+    foo: a
+    bar: b
