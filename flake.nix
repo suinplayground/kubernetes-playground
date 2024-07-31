@@ -14,7 +14,6 @@
       {
         devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
-          	gum
           	helmfile
           	just
             crossplane-cli
@@ -24,6 +23,7 @@
             kubernetes-helm
             tilt
             yamllint
+            yq-go
           ];
           shellHook = ''
             if [ -n "$SHELL" ]; then

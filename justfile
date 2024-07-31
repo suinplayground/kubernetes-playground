@@ -9,15 +9,30 @@ setup-kubernetes-provider:
 	SA=$(kubectl -n crossplane-system get sa -o name | grep provider-kubernetes | sed -e 's|serviceaccount\/|crossplane-system:|g')
 	kubectl create clusterrolebinding provider-kubernetes-admin-binding --clusterrole cluster-admin --serviceaccount="${SA}"
 
-setup-github-provider:
-	#!/usr/bin/env bash
-	set -eux
-	GH_OWNER="$(gum input --header "GitHub organization name")"
-	GH_TOKEN="$(gum input --header "GitHub personal access token (Administration=write, Metadata=read)")"
-	kubectl create secret generic github-secret --from-literal=credentials="{\"token\":\"${GH_TOKEN}\",\"owner\":\"${GH_OWNER}\"}"
+install-github-provider:
 	kubectl apply -f provider-github.yaml
-	sleep 5
-	kubectl apply -f provider-github-config.yaml
+
+setup-for-github-personal:
+	#!/usr/bin/env bash
+	[[ -f github-credentials/personal.yaml ]] || {
+		gum format -- 'Please copy `github-credentials/personal.template.yaml` to create `github-credentials/personal.yaml` and fill in the values.'
+		exit 1
+	}
+	set -eux
+	JSON=$(yq 'omit(["$schema"])' github-credentials/personal.yaml -o=json -I=0)
+	kubectl create secret generic github-personal --from-literal=credentials="${JSON}"
+	kubectl apply -f provider-github-personal-config.yaml
+
+setup-for-github-app:
+	#!/usr/bin/env bash
+	[[ -f github-credentials/github-app.yaml ]] || {
+		gum format -- 'Please copy `github-credentials/github-app.template.yaml` to create `github-credentials/github-app.yaml` and fill in the values.'
+		exit 1
+	}
+	set -eux
+	JSON=$(yq 'omit(["$schema"])' github-credentials/github-app.yaml -o=json -I=0)
+	kubectl create secret generic github-app --from-literal=credentials="${JSON}"
+	kubectl apply -f provider-github-app-config.yaml
 
 teardown:
 	k3d cluster delete --config cluster.yaml

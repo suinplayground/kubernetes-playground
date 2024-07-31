@@ -58,11 +58,46 @@ Prerequisites:
 		- `Metadata: Read-only`
 
 ```shell
-just setup-github-provider
+just install-github-provider
+just setup-for-github-personal
 kubectl apply -f 04-create-github-repository-from-managed-resource/github-repository.yaml
 ```
 
-This will create a new GitHub repository with name `repo-by-crossplane` in your organization.
+This will create a new GitHub repository with name `test-repo-1` in your organization.
+
+To remove the created demo repository from GitHub, please delete the claim:
+
+```shell
+kubectl delete repository repo1
+````
+
+### Demo 5: Create a GitHub repository from a managed resource, but using a GitHub App credentials
+
+Prerequisites:
+
+- GitHub organization
+- GitHub App credentials for your organization with the permissions below:
+	- Repository permissions
+		- `Administration: Read & write`
+	- Organization permissions
+		- `Metadata: Read-only`
+- GitHub App ID
+- GitHub App private key
+- GitHub App installation ID
+
+```shell
+just install-github-provider
+just setup-for-github-app
+kubectl apply -f 05-create-github-repository-from-managed-resource-github-app/github-repository.yaml
+```
+
+This will create a new GitHub repository with name `test-repo-2` in your organization.
+
+To remove the created demo repository from GitHub, please delete the claim:
+
+```shell
+kubectl delete repository repo2
+````
 
 ## Tear down
 

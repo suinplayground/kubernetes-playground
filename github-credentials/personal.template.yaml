@@ -1,0 +1,4 @@
+$schema: ./schema.json
+owner: (your GitHub organization or username)
+token: github_pat_...(your personal access token)...
+# for the detail of github provider configuration, see https://registry.terraform.io/providers/integrations/github/latest/docs#argument-reference
