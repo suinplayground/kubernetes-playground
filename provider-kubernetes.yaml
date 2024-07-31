@@ -4,11 +4,3 @@ metadata:
   name: provider-kubernetes
 spec:
   package: xpkg.upbound.io/crossplane-contrib/provider-kubernetes:v0.14.1
----
-apiVersion: kubernetes.crossplane.io/v1alpha1
-kind: ProviderConfig
-metadata:
-  name: kubernetes-provider
-spec:
-  credentials:
-    source: InjectedIdentity
