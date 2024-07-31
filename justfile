@@ -36,5 +36,11 @@ setup-for-github-app:
 	kubectl create secret generic github-app --from-literal=credentials="${JSON}"
 	kubectl apply -f provider-github-app-config.yaml
 
+download-crds:
+	#!/usr/bin/env bash
+	kubectl get crd -o custom-columns=NAME:.metadata.name | grep -E "suin.jp|github.upbound.io" | while read -r crd; do
+		kubectl get crd "$crd" -o yaml > "crds/${crd}.yaml"
+	done
+
 teardown:
 	k3d cluster delete --config cluster.yaml
