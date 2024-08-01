@@ -28,6 +28,7 @@ just setup
 ```shell
 just install-kubernetes-provider
 just setup-kubernetes-provider-config
+just grant-kubernetes-provider-admin
 kubectl apply -f 01-create-namespace-from-managed-resource/namespace-managed-resource.yaml
 ```
 
@@ -115,6 +116,25 @@ kubectl apply -f 03-create-config-map-from-claim/myconfigmap-definition.yaml
 kubectl apply -f 03-create-config-map-from-claim/myconfigmap-composition.yaml
 kubectl apply -f 06-create-config-map-from-composite-resource/xconfigmap-composite-resource.yaml
 ```
+
+### Demo 7: Create a config and a secret map with pipeline mode
+
+This demo creates a config map and a secret map by creating a composite resource with pipeline mode.
+
+```shell
+just install-kubernetes-provider
+just setup-kubernetes-provider-config
+# install composition function
+kubectl apply -f functions/function-patch-and-transform.yaml
+# create the composite resource definition (XRD)
+kubectl apply -f 07-create-config-map-with-pipeline-mode/composite-resource-definition.yaml
+# create the composition
+kubectl apply -f 07-create-config-map-with-pipeline-mode/composition.yaml
+# create the composite resource
+kubectl apply -f 07-create-config-map-with-pipeline-mode/composite-resource.yaml
+```
+
+Then, you can see the created config map `demo-07-{suffix}` and secret map `demo-07-{suffix}`.
 
 ## Tear down
 

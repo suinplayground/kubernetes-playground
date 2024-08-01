@@ -6,6 +6,9 @@ install-kubernetes-provider:
 	kubectl apply -f provider-kubernetes.yaml
 
 setup-kubernetes-provider-config:
+	kubectl apply -f provider-kubernetes-config.yaml
+
+grant-kubernetes-provider-admin:
 	#!/usr/bin/env bash
 	set -eux
 	SA=$(kubectl -n crossplane-system get sa -o name | grep provider-kubernetes | sed -e 's|serviceaccount\/|crossplane-system:|g')
@@ -38,7 +41,7 @@ setup-for-github-app:
 
 download-crds:
 	#!/usr/bin/env bash
-	kubectl get crd -o custom-columns=NAME:.metadata.name | grep -E "suin.jp|github.upbound.io" | while read -r crd; do
+	kubectl get crd -o custom-columns=NAME:.metadata.name | grep -E "crossplane.io|suin.jp|github.upbound.io" | while read -r crd; do
 		kubectl get crd "$crd" -o yaml > "crds/${crd}.yaml"
 	done
 

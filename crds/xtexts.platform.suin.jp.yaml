@@ -1,0 +1,244 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  creationTimestamp: "2024-08-01T00:09:27Z"
+  generation: 1
+  name: xtexts.platform.suin.jp
+  ownerReferences:
+  - apiVersion: apiextensions.crossplane.io/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: CompositeResourceDefinition
+    name: xtexts.platform.suin.jp
+    uid: 741f1049-0c04-4eef-a20f-977def60f006
+  resourceVersion: "7002"
+  uid: 23104acb-c339-450c-8c44-aa6b9076a72f
+spec:
+  conversion:
+    strategy: None
+  group: platform.suin.jp
+  names:
+    categories:
+    - composite
+    kind: XText
+    listKind: XTextList
+    plural: xtexts
+    singular: xtext
+  scope: Cluster
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .status.conditions[?(@.type=='Synced')].status
+      name: SYNCED
+      type: string
+    - jsonPath: .status.conditions[?(@.type=='Ready')].status
+      name: READY
+      type: string
+    - jsonPath: .spec.compositionRef.name
+      name: COMPOSITION
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: AGE
+      type: date
+    name: v1
+    schema:
+      openAPIV3Schema:
+        properties:
+          apiVersion:
+            type: string
+          kind:
+            type: string
+          metadata:
+            properties:
+              name:
+                maxLength: 63
+                type: string
+            type: object
+          spec:
+            properties:
+              claimRef:
+                properties:
+                  apiVersion:
+                    type: string
+                  kind:
+                    type: string
+                  name:
+                    type: string
+                  namespace:
+                    type: string
+                required:
+                - apiVersion
+                - kind
+                - namespace
+                - name
+                type: object
+              compositionRef:
+                properties:
+                  name:
+                    type: string
+                required:
+                - name
+                type: object
+              compositionRevisionRef:
+                properties:
+                  name:
+                    type: string
+                required:
+                - name
+                type: object
+              compositionRevisionSelector:
+                properties:
+                  matchLabels:
+                    additionalProperties:
+                      type: string
+                    type: object
+                required:
+                - matchLabels
+                type: object
+              compositionSelector:
+                properties:
+                  matchLabels:
+                    additionalProperties:
+                      type: string
+                    type: object
+                required:
+                - matchLabels
+                type: object
+              compositionUpdatePolicy:
+                default: Automatic
+                enum:
+                - Automatic
+                - Manual
+                type: string
+              environmentConfigRefs:
+                items:
+                  properties:
+                    apiVersion:
+                      type: string
+                    kind:
+                      type: string
+                    name:
+                      type: string
+                  required:
+                  - apiVersion
+                  - kind
+                  type: object
+                type: array
+              publishConnectionDetailsTo:
+                properties:
+                  configRef:
+                    default:
+                      name: default
+                    properties:
+                      name:
+                        type: string
+                    type: object
+                  metadata:
+                    properties:
+                      annotations:
+                        additionalProperties:
+                          type: string
+                        type: object
+                      labels:
+                        additionalProperties:
+                          type: string
+                        type: object
+                      type:
+                        type: string
+                    type: object
+                  name:
+                    type: string
+                required:
+                - name
+                type: object
+              resourceRefs:
+                items:
+                  properties:
+                    apiVersion:
+                      type: string
+                    kind:
+                      type: string
+                    name:
+                      type: string
+                  required:
+                  - apiVersion
+                  - kind
+                  type: object
+                type: array
+                x-kubernetes-list-type: atomic
+              value:
+                type: string
+              writeConnectionSecretToRef:
+                properties:
+                  name:
+                    type: string
+                  namespace:
+                    type: string
+                required:
+                - name
+                - namespace
+                type: object
+            required:
+            - value
+            type: object
+          status:
+            properties:
+              conditions:
+                description: Conditions of the resource.
+                items:
+                  properties:
+                    lastTransitionTime:
+                      format: date-time
+                      type: string
+                    message:
+                      type: string
+                    reason:
+                      type: string
+                    status:
+                      type: string
+                    type:
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+                x-kubernetes-list-map-keys:
+                - type
+                x-kubernetes-list-type: map
+              connectionDetails:
+                properties:
+                  lastPublishedTime:
+                    format: date-time
+                    type: string
+                type: object
+            type: object
+        required:
+        - spec
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    categories:
+    - composite
+    kind: XText
+    listKind: XTextList
+    plural: xtexts
+    singular: xtext
+  conditions:
+  - lastTransitionTime: "2024-08-01T00:09:27Z"
+    message: no conflicts found
+    reason: NoConflicts
+    status: "True"
+    type: NamesAccepted
+  - lastTransitionTime: "2024-08-01T00:09:27Z"
+    message: the initial names have been accepted
+    reason: InitialNamesAccepted
+    status: "True"
+    type: Established
+  storedVersions:
+  - v1
