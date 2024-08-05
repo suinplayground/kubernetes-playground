@@ -170,6 +170,19 @@ demo-08-9tmzn      2      70s
 kube-root-ca.crt   1      42m
 ```
 
+### Demo 9: Create two config maps with KCL (one depends on the other)
+
+```shell
+cd 08-create-config-with-kcl
+kubectl apply -f 01-providers.yaml
+kubectl wait --for=condition=Healthy=true provider.pkg.crossplane.io/provider-kubernetes
+kubectl apply -f 02-providers-config.yaml
+kubectl apply -f 03-functions.yaml
+kubectl apply -f 04-xrd.yaml
+kubectl apply -f 05-composition.yaml
+kubectl apply -f 06-xr.yaml
+```
+
 ## Tear down
 
 Delete the cluster:
