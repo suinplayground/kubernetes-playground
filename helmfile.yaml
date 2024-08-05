@@ -7,3 +7,6 @@ releases:
     namespace: crossplane-system
     chart: crossplane-stable/crossplane
     version: 1.16
+#    set:
+#      - name: args[0]
+#        value: --enable-realtime-compositions

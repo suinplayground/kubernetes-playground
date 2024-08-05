@@ -136,6 +136,40 @@ kubectl apply -f 07-create-config-map-with-pipeline-mode/composite-resource.yaml
 
 Then, you can see the created config map `demo-07-{suffix}` and secret map `demo-07-{suffix}`.
 
+### Demo 8: Create a config map with KCL
+
+KCL (Kubernetes Composition Language) is a language that allows you to define compositions in a more declarative way.
+
+This demo creates a config map by creating a composite resource with KCL.
+
+```shell
+cd 08-create-config-with-kcl
+kubectl apply -f providers.yaml
+kubectl wait --for=condition=Healthy=true provider.pkg.crossplane.io/provider-kubernetes
+kubectl apply -f providers-config.yaml
+kubectl apply -f functions.yaml
+kubectl apply -f composition.yaml
+kubectl apply -f xrd.yaml
+kubectl apply -f xr.yaml
+```
+
+Then you can see the managed resource `demo-08-{suffix}`.
+
+```shell
+kubectl get object
+NAME            KIND        PROVIDERCONFIG        SYNCED   READY   AGE
+demo-08-9tmzn   ConfigMap   kubernetes-provider   True     True    63s
+```
+
+Also, you can see the created config map.
+
+```shell
+kubectl get configmap
+NAME               DATA   AGE
+demo-08-9tmzn      2      70s
+kube-root-ca.crt   1      42m
+```
+
 ## Tear down
 
 Delete the cluster:

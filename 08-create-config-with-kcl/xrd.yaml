@@ -1,0 +1,22 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xdemo08.platform.suin.jp
+spec:
+  group: platform.suin.jp
+  names:
+    kind: XDemo08
+    plural: xdemo08
+  versions:
+    - name: v1
+      referenceable: true
+      served: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                value:
+                  type: string
