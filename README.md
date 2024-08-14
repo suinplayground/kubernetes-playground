@@ -35,6 +35,12 @@ The [crossplane](crossplane) directory contains a collection of examples that de
 8. [Create a config map with KCL](crossplane/08-create-config-with-kcl/README.md)
 9. [Create two config maps with KCL (one depends on the other)](crossplane/09-create-config-with-kcl-dependency/README.md)
 
+## SealedSecret
+
+SealedSecret is a Kubernetes Custom Resource Definition that allows you to store encrypted secrets in Git.
+
+1. [Encrypt a secret and decrypt sealed secret](sealedsecret/01-encrypt-decrypt/README.md)
+
 ## Tear down
 
 Delete the cluster:

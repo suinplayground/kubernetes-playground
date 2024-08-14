@@ -27,7 +27,9 @@
             crossplane-cli
             k3d
             kubectl
+            kubectl-view-secret
             kubernetes-helm
+            kubeseal
             yamllint
             yq-go
             zsh
