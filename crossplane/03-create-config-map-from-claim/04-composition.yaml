@@ -1,0 +1,25 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: demo03-to-configmap
+spec:
+  compositeTypeRef:
+    apiVersion: demo03.suin.jp/v1alpha1
+    kind: XConfigMap
+  resources:
+    - name: configmap
+      base:
+        apiVersion: kubernetes.crossplane.io/v1alpha2
+        kind: Object
+        spec:
+          forProvider:
+            manifest:
+              apiVersion: v1
+              kind: ConfigMap
+              metadata:
+                namespace: default
+      patches:
+        - fromFieldPath: metadata.name
+          toFieldPath: metadata.name
+        - fromFieldPath: spec.data
+          toFieldPath: spec.forProvider.manifest.data

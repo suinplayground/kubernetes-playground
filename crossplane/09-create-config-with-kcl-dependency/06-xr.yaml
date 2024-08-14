@@ -1,0 +1,5 @@
+apiVersion: demo09.suin.jp/v1
+kind: XConfigMap
+metadata:
+  name: demo09-config-map
+spec: {}

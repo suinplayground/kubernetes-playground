@@ -1,0 +1,7 @@
+apiVersion: demo03.suin.jp/v1alpha1
+kind: ConfigMap
+metadata:
+  name: demo03-config-map
+spec:
+  data:
+    hello: world

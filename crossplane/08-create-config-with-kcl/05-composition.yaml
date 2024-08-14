@@ -1,0 +1,45 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: demo08-create-config-map-with-kcl
+spec:
+  compositeTypeRef:
+    apiVersion: demo08.suin.jp/v1
+    kind: XConfigMap
+  mode: Pipeline
+  pipeline:
+    - step: create-config-map
+      functionRef:
+        name: function-kcl
+      input:
+        apiVersion: krm.kcl.dev/v1alpha1
+        kind: KCLInput
+        spec:
+          source: |
+            configMap = {
+              apiVersion = "kubernetes.crossplane.io/v1alpha2"
+              kind = "Object"
+              metadata = {
+                annotations = {
+                  "krm.kcl.dev/composition-resource-name" = "demo08-configmap"
+                }
+              }
+              spec = {
+                forProvider = {
+                  manifest = {
+                    apiVersion = "v1"
+                    kind = "ConfigMap"
+                    metadata = {
+                      namespace = "default"
+                    }
+                    data = {
+                      hello = "world"
+                    }
+                  }
+                }
+              }
+            }
+            items = [configMap]
+    - step: automatically-detect-ready-composed-resources
+      functionRef:
+        name: function-auto-ready

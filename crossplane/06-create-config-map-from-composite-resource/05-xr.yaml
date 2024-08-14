@@ -1,0 +1,7 @@
+apiVersion: demo06.suin.jp/v1alpha1
+kind: XConfigMap
+metadata:
+  name: demo06-config-map
+spec:
+  data:
+    hello: world

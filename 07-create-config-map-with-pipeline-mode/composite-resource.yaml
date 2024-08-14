@@ -1,6 +1,0 @@
-apiVersion: platform.suin.jp/v1
-kind: XText
-metadata:
-  name: demo-07
-spec:
-  value: Hello world

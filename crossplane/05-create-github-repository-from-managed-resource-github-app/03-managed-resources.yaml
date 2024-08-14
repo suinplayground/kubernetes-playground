@@ -1,0 +1,11 @@
+apiVersion: repo.github.upbound.io/v1alpha1
+kind: Repository
+metadata:
+  name: demo05-repo
+  annotations:
+    crossplane.io/external-name: demo05-repo
+spec:
+  forProvider:
+    name: demo05-repo
+    visibility: private
+    description: "Created by Crossplane using the GitHub Provider with personal access token. Source repo: https://github.com/suinplayground/kubernetes-playground"

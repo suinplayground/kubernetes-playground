@@ -1,0 +1,88 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: demo09-create-config-map-with-kcl-dependency
+spec:
+  compositeTypeRef:
+    apiVersion: demo09.suin.jp/v1
+    kind: XConfigMap
+  mode: Pipeline
+  pipeline:
+    - step: create-config-map
+      functionRef:
+        name: function-kcl
+      input:
+        apiVersion: krm.kcl.dev/v1alpha1
+        kind: KCLInput
+        spec:
+          # language=KCL
+          source: |
+            configMap = {
+              apiVersion = "kubernetes.crossplane.io/v1alpha2"
+              kind = "Object"
+              metadata = {
+                annotations = {
+                  "krm.kcl.dev/composition-resource-name" = "demo09-config-map"
+                }
+              }
+              spec = {
+                forProvider = {
+                  manifest = {
+                    apiVersion = "v1"
+                    kind = "ConfigMap"
+                    metadata = {
+                      namespace = "default"
+                    }
+                    data = {
+                      hello = "world"
+                    }
+                  }
+                }
+              }
+            }
+            items = [configMap]
+    - step: create-config-map2
+      functionRef:
+        name: function-kcl
+      input:
+        apiVersion: krm.kcl.dev/v1alpha1
+        kind: KCLInput
+        spec:
+          # language=KCL
+          source: |
+            ocds = option("params").ocds
+            configMapSource = ocds["demo09-config-map"]
+            data = configMapSource?.Resource?.spec?.forProvider?.manifest?.data
+            originName = configMapSource?.Resource?.metadata?.name
+            # Debug code: this will print in the pod of the function
+            print({ originName = originName, data = data })
+            print(configMapSource)
+            print(configMapSource?.Resource)
+            configMapCopy = {
+              apiVersion = "kubernetes.crossplane.io/v1alpha2"
+              kind = "Object"
+              metadata = {
+                annotations = {
+                  "krm.kcl.dev/composition-resource-name" = "demo09-copy-of-the-config-map"
+                }
+                labels = {
+                  "suin.jp/origin-name" = originName # Copy the name of the original ConfigMap
+                }
+              }
+              spec = {
+                forProvider = {
+                  manifest = {
+                    apiVersion = "v1"
+                    kind = "ConfigMap"
+                    metadata = {
+                      namespace = "default"
+                    }
+                    data = data # Copy the data from the original ConfigMap
+                  }
+                }
+              }
+            }
+            items = [configMapCopy]
+    - step: automatically-detect-ready-composed-resources
+      functionRef:
+        name: function-auto-ready

@@ -1,7 +1,7 @@
 apiVersion: k3d.io/v1alpha5
 kind: Simple
 metadata:
-  name: crossplane-playground
+  name: kubernetes-playground
 servers: 1
 agents: 0
 image: docker.io/rancher/k3s:latest

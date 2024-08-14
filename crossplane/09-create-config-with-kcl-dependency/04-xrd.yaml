@@ -1,0 +1,15 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xconfigmaps.demo09.suin.jp
+spec:
+  group: demo09.suin.jp
+  names:
+    kind: XConfigMap
+    plural: xconfigmaps
+  versions:
+    - name: v1
+      referenceable: true
+      served: true
+      schema:
+        openAPIV3Schema: {}

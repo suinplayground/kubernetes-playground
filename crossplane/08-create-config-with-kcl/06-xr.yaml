@@ -1,0 +1,6 @@
+apiVersion: demo08.suin.jp/v1
+kind: XConfigMap
+metadata:
+  name: demo08-config-map
+  namespace: default
+spec: {}

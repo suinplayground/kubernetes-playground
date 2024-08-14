@@ -1,5 +1,0 @@
-apiVersion: platform.suin.jp/v1
-kind: XDemo08
-metadata:
-  name: demo-08
-spec: {}

@@ -18,23 +18,23 @@
       {
         devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
+          	fish
+          	gnugrep
+          	gnused
+          	gum
           	helmfile
           	just
             crossplane-cli
             k3d
-            kind
             kubectl
             kubernetes-helm
-            tilt
             yamllint
             yq-go
+            zsh
           ] ++ (with pkgs-2405; []);
           shellHook = ''
-            if [ -n "$SHELL" ]; then
-              exec $SHELL
-            else
-              echo "SHELL environment variable is not set. Using default shell."
-            fi
+						export KUBECONFIG="$(pwd)/kubeconfig.yaml"
+            exec fish
           '';
         };
         formatter = pkgs.nixpkgs-fmt;
