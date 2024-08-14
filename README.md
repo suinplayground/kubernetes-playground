@@ -40,6 +40,7 @@ The [crossplane](crossplane) directory contains a collection of examples that de
 SealedSecret is a Kubernetes Custom Resource Definition that allows you to store encrypted secrets in Git.
 
 1. [Encrypt a secret and decrypt sealed secret](sealedsecret/01-encrypt-decrypt/README.md)
+2. [What happens when sealing key rotation occurs?](sealedsecret/02-sealing-key-rotation/README.md)
 
 ## Tear down
 
