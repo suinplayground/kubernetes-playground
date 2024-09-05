@@ -1,0 +1,9 @@
+repositories:
+  - name: fluxcd-community
+    url: https://fluxcd-community.github.io/helm-charts
+
+releases:
+  - name: flux-system
+    namespace: flux-system
+    chart: fluxcd-community/flux2
+    version: 2.13.0  # Update this version to the latest version

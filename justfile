@@ -6,8 +6,9 @@ teardown:
 
 download-crds:
 	#!/usr/bin/env bash
+	set -eux
 	[ -f crds.yaml ] && rm crds.yaml
-	kubectl get crd -o custom-columns=NAME:.metadata.name | grep -E "crossplane.io|suin.jp|github.upbound.io" | while read -r crd; do
+	kubectl get crd -o custom-columns=NAME:.metadata.name | grep -E "crossplane.io|suin.jp|github.upbound.io|fluxcd.io" | while read -r crd; do
 		kubectl get crd "$crd" -o yaml >> "crds.yaml"
 		echo "---" >> "crds.yaml"
 	done

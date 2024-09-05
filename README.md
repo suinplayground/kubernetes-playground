@@ -42,6 +42,10 @@ SealedSecret is a Kubernetes Custom Resource Definition that allows you to store
 1. [Encrypt a secret and decrypt sealed secret](sealedsecret/01-encrypt-decrypt/README.md)
 2. [What happens when sealing key rotation occurs?](sealedsecret/02-sealing-key-rotation/README.md)
 
+## FluxCD
+
+1. [Scanning for New Tags in GitHub Container Registry](fluxcd/01-scanning-for-new-tags-in-github-container-registry/README.md)
+
 ## Tear down
 
 Delete the cluster:
