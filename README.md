@@ -34,6 +34,9 @@ The [crossplane](crossplane) directory contains a collection of examples that de
 7. [Create a config and a secret map with pipeline mode](crossplane/07-create-config-map-with-pipeline-mode/README.md)
 8. [Create a config map with KCL](crossplane/08-create-config-with-kcl/README.md)
 9. [Create two config maps with KCL (one depends on the other)](crossplane/09-create-config-with-kcl-dependency/README.md)
+10. [`function-extra-resources` basic example](crossplane/10-function-extra-resources/README.md)
+11. [`function-extra-resources` with `FromCompositeFieldPath`](crossplane/11-function-extra-resources-type-from-composite-field-path/README.md)
+12. [`function-extra-resources` to fetch custom resources that are not XRs](crossplane/12-function-extra-resources-to-pull-custom-resources/README.md)
 
 ## SealedSecret
 

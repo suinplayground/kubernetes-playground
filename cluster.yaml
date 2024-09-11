@@ -3,12 +3,16 @@ kind: Simple
 metadata:
   name: kubernetes-playground
 servers: 1
-agents: 0
-image: docker.io/rancher/k3s:latest
+agents: 1
+image: docker.io/rancher/k3s:v1.30.0-k3s1
 kubeAPI:
   host: 0.0.0.0
   hostIP: 127.0.0.1
   hostPort: "6443"
+ports:
+  - port: 8080:80
+    nodeFilters:
+      - loadbalancer
 registries:
   create:
     name: registry.localhost

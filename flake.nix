@@ -37,6 +37,7 @@
             zsh
             kcl.cli
             kcl.language-server
+            kcl.kubectl-kcl
           ] ++ (with pkgs-2405; [ ]);
           shellHook = ''
             						export KUBECONFIG="$(pwd)/kubeconfig.yaml"
