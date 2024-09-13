@@ -1,0 +1,22 @@
+[dependencies]
+  [dependencies.crossplane]
+    name = "crossplane"
+    full_name = "crossplane_1.17.0"
+    version = "1.17.0"
+  [dependencies.crossplane-provider-kubernetes]
+    name = "crossplane-provider-kubernetes"
+    full_name = "crossplane-provider-kubernetes_0.9.0"
+    version = "0.9.0"
+  [dependencies.fluxcd]
+    name = "fluxcd"
+    full_name = "fluxcd_0.1.0"
+    version = "0.1.0"
+  [dependencies.fluxcd-image-reflector-controller]
+    name = "fluxcd-image-reflector-controller"
+    full_name = "fluxcd-image-reflector-controller_v0.32.0"
+    version = "v0.32.0"
+    sum = "DjZucA9RjaKqURQhmz2QQwrV1RgLGo2oVJXtASYDbTw="
+  [dependencies.k8s]
+    name = "k8s"
+    full_name = "k8s_1.30"
+    version = "1.30"

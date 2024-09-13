@@ -1,0 +1,15 @@
+repositories:
+  - name: crossplane-stable
+    url: https://charts.crossplane.io/stable
+  - name: fluxcd-community
+    url: https://fluxcd-community.github.io/helm-charts
+
+releases:
+  - name: crossplane
+    namespace: crossplane-system
+    chart: crossplane-stable/crossplane
+    version: 1.16
+  - name: flux-system
+    namespace: flux-system
+    chart: fluxcd-community/flux2
+    version: 2.13.0
