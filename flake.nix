@@ -3,7 +3,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-2405.url = "github:NixOS/nixpkgs/nixos-24.05";
     flake-utils.url = "github:numtide/flake-utils";
-    kclpkgs.url = "github:appthrust/kcl-nix";
+    kclpkgs.url = "github:appthrust/kcl-nix/f5c3590ab4ed12c307219a1dda489a49b52655ca";
   };
 
   outputs = { self, nixpkgs, nixpkgs-2405, flake-utils, kclpkgs }:
@@ -20,7 +20,9 @@
       {
         devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
+            awscli2
             fish
+            flarectl
             gnugrep
             gnused
             gum
@@ -41,7 +43,6 @@
           ] ++ (with pkgs-2405; [ ]);
           shellHook = ''
             						export KUBECONFIG="$(pwd)/kubeconfig.yaml"
-                        exec fish
           '';
         };
         formatter = pkgs.nixpkgs-fmt;

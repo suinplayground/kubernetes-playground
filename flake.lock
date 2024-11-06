@@ -42,16 +42,17 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1725840042,
-        "narHash": "sha256-r1u9s07NktLDBTku+Y3rGanHIu2dByAK6Um+k0myJ28=",
+        "lastModified": 1730175361,
+        "narHash": "sha256-fgea+P5vFFLiQRK2sSKOg0d4Kcz3A6zrL8ijfaQhmaA=",
         "owner": "appthrust",
         "repo": "kcl-nix",
-        "rev": "7596fc2862b0428f974e92ba240440b65f576711",
+        "rev": "f5c3590ab4ed12c307219a1dda489a49b52655ca",
         "type": "github"
       },
       "original": {
         "owner": "appthrust",
         "repo": "kcl-nix",
+        "rev": "f5c3590ab4ed12c307219a1dda489a49b52655ca",
         "type": "github"
       }
     },
