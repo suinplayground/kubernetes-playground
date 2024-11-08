@@ -49,6 +49,14 @@ SealedSecret is a Kubernetes Custom Resource Definition that allows you to store
 
 1. [Scanning for New Tags in GitHub Container Registry](fluxcd/01-scanning-for-new-tags-in-github-container-registry/README.md)
 
+## external-dns
+
+external-dns is a tool that automates DNS record management for Kubernetes resources.
+
+1. [Basic AWS Route53 Setup](external-dns/01-aws/README.md) - Learn how to use external-dns with AWS Route53 for automated DNS management.
+2. [Securing TXT Registry Records](external-dns/02-txt-encryption/README.md) - Explore how to encrypt TXT registry records for enhanced security.
+3. [Implementing Route53 Failover](external-dns/03-route53-failover/README.md) - Set up DNS failover using external-dns with AWS Route53.
+
 ## Tear down
 
 Delete the cluster:
