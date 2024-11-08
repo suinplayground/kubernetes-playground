@@ -11,6 +11,7 @@
       let
         pkgs = import nixpkgs {
           inherit system;
+          config.allowUnfree = true;
         };
         pkgs-2405 = import nixpkgs-2405 {
           inherit system;
@@ -21,6 +22,7 @@
         devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
             awscli2
+            bun
             fish
             flarectl
             gnugrep
@@ -34,6 +36,7 @@
             kubectl-view-secret
             kubernetes-helm
             kubeseal
+            terraform
             yamllint
             yq-go
             zsh

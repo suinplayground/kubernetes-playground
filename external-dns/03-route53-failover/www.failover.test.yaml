@@ -1,0 +1,33 @@
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
+metadata:
+  name: www.failover.test
+  namespace: default
+spec:
+  endpoints:
+    - dnsName: www.failover.test
+      recordType: A
+      recordTTL: 60
+      providerSpecific:
+        - name: alias
+          value: "true"
+        - name: aws/failover
+          value: PRIMARY
+        - name: aws/health-check-id
+          value: b0d7bb6b-d5aa-44a2-9f33-53f550df7f96
+        - name: aws/evaluate-target-health
+          value: "true"
+      setIdentifier: www-primary
+      targets:
+        - alb-failover-demo-primary-88520931.ap-northeast-1.elb.amazonaws.com
+    - dnsName: www.failover.test
+      recordType: A
+      recordTTL: 60
+      providerSpecific:
+        - name: alias
+          value: "true"
+        - name: aws/failover
+          value: SECONDARY
+      setIdentifier: www-secondary
+      targets:
+        - alb-failover-demo-secondary-1897280663.ap-northeast-1.elb.amazonaws.com
