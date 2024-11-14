@@ -57,6 +57,12 @@ external-dns is a tool that automates DNS record management for Kubernetes resou
 2. [Securing TXT Registry Records](external-dns/02-txt-encryption/README.md) - Explore how to encrypt TXT registry records for enhanced security.
 3. [Implementing Route53 Failover](external-dns/03-route53-failover/README.md) - Set up DNS failover using external-dns with AWS Route53.
 
+## external-secrets
+
+external-secrets is a Kubernetes operator that integrates external secret management systems.
+
+1. [Sync Kubernetes Secrets to AWS Secrets Manager](external-secrets/01-push-secret/README.md) - Learn how to use PushSecret to synchronize Kubernetes Secrets to AWS Secrets Manager.
+
 ## Tear down
 
 Delete the cluster:
