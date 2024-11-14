@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: debug-pod
+spec:
+  containers:
+  - name: debug
+    image: curlimages/curl
+    command: ["sleep", "infinity"]
+    volumeMounts:
+    - name: auth
+      mountPath: /tmp/auth
+      readOnly: true
+  volumes:
+  - name: auth
+    secret:
+      secretName: debug-auth

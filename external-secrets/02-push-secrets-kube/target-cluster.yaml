@@ -1,0 +1,33 @@
+apiVersion: k3d.io/v1alpha5
+kind: Simple
+metadata:
+  name: target-cluster
+servers: 1
+agents: 1
+image: docker.io/rancher/k3s:v1.30.0-k3s1
+kubeAPI:
+  host: 0.0.0.0
+  hostIP: 127.0.0.1
+  hostPort: "6444"
+ports:
+  - port: 8081:80
+    nodeFilters:
+      - loadbalancer
+registries:
+  use:
+    - registry.localhost
+network: shared-net
+options:
+  k3d:
+    wait: true
+  kubeconfig:
+    updateDefaultKubeconfig: true
+    switchCurrentContext: true
+  k3s:
+    extraArgs:
+      - arg: "--cluster-cidr=10.44.0.0/16"
+        nodeFilters:
+          - server:*
+      - arg: "--service-cidr=10.45.0.0/16"
+        nodeFilters:
+          - server:*

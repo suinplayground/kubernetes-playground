@@ -62,6 +62,7 @@ external-dns is a tool that automates DNS record management for Kubernetes resou
 external-secrets is a Kubernetes operator that integrates external secret management systems.
 
 1. [Sync Kubernetes Secrets to AWS Secrets Manager](external-secrets/01-push-secret/README.md) - Learn how to use PushSecret to synchronize Kubernetes Secrets to AWS Secrets Manager.
+2. [Push Secrets to Another Kubernetes Cluster](external-secrets/02-push-secrets-kube/README.md) - Learn how to push secrets to another Kubernetes cluster.
 
 ## Tear down
 
