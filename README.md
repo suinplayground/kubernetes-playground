@@ -38,6 +38,10 @@ The [crossplane](crossplane) directory contains a collection of examples that de
 11. [`function-extra-resources` with `FromCompositeFieldPath`](crossplane/11-function-extra-resources-type-from-composite-field-path/README.md)
 12. [`function-extra-resources` to fetch custom resources that are not XRs](crossplane/12-function-extra-resources-to-pull-custom-resources/README.md)
 
+## Cluster API
+
+1. [Docker Provider (CAPD)](cluster-api/01-capd/README.md)
+
 ## SealedSecret
 
 SealedSecret is a Kubernetes Custom Resource Definition that allows you to store encrypted secrets in Git.

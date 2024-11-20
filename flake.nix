@@ -32,6 +32,7 @@
             just
             crossplane-cli
             k3d
+            kind
             kubectl
             kubectl-view-secret
             kubernetes-helm
