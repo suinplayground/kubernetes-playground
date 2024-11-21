@@ -56,6 +56,7 @@ SealedSecret is a Kubernetes Custom Resource Definition that allows you to store
 ## Helm
 
 1. [Host Chart on Private GitHub Repository](helm/01-host-chart-on-private-github-repository/README.md) - Learn how to host and manage private Helm charts using a GitHub repository.
+2. [Host Chart on GitHub Container Registry](helm/02-host-chart-on-ghcr/README.md) - Learn how to host and manage Helm charts using GitHub Container Registry (GHCR).
 
 ## external-dns
 
@@ -78,4 +79,3 @@ Delete the cluster:
 
 ```sh
 just teardown
-```
