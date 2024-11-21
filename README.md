@@ -1,6 +1,6 @@
 # Kubernetes Playground
 
-This repository contains a collection of examples that demonstrate how to use Crossplane to provision and manage cloud services using Kubernetes-style APIs.
+This repository contains a collection of examples that demonstrate various Kubernetes tools and practices, including Crossplane, Cluster API, Helm, and other cloud-native technologies.
 
 ## Requirements
 
