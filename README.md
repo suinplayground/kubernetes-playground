@@ -53,6 +53,10 @@ SealedSecret is a Kubernetes Custom Resource Definition that allows you to store
 
 1. [Scanning for New Tags in GitHub Container Registry](fluxcd/01-scanning-for-new-tags-in-github-container-registry/README.md)
 
+## Helm
+
+1. [Host Chart on Private GitHub Repository](helm/01-host-chart-on-private-github-repository/README.md) - Learn how to host and manage private Helm charts using a GitHub repository.
+
 ## external-dns
 
 external-dns is a tool that automates DNS record management for Kubernetes resources.
