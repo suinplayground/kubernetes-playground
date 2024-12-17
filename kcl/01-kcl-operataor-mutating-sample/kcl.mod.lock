@@ -1,0 +1,17 @@
+[dependencies]
+  [dependencies.filepath]
+    name = "filepath"
+    full_name = "filepath_0.0.2"
+    version = "0.0.2"
+    reg = "ghcr.io"
+    repo = "appthrust/kcl/filepath"
+    oci_tag = "0.0.2"
+  [dependencies.k8s]
+    name = "k8s"
+    full_name = "k8s_1.31.2"
+    version = "1.31.2"
+  [dependencies.kcl-run]
+    name = "kcl-run"
+    full_name = "kcl-run_0.1.3"
+    version = "0.1.3"
+    sum = "Tt1iY0S9GJqfIu9GJiEvuW1jqw6MJ2wggax4cCy2Cpk="

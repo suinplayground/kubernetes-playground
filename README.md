@@ -59,6 +59,12 @@ SealedSecret is a Kubernetes Custom Resource Definition that allows you to store
 1. [Host Chart on Private GitHub Repository](helm/01-host-chart-on-private-github-repository/README.md) - Learn how to host and manage private Helm charts using a GitHub repository.
 2. [Host Chart on GitHub Container Registry](helm/02-host-chart-on-ghcr/README.md) - Learn how to host and manage Helm charts using GitHub Container Registry (GHCR).
 
+## KCL
+
+KCL is a constraint-based record & functional language that enhances the writing of complex configurations, including Kubernetes.
+
+1. [Using KCL Operator to Mutate Kubernetes Resources](kcl/01-kcl-operataor-mutating-sample/README.md) - Learn how to use KCL operator to automatically add annotations to Kubernetes Pods.
+
 ## external-dns
 
 external-dns is a tool that automates DNS record management for Kubernetes resources.
