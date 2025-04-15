@@ -1,0 +1,201 @@
+$ just test-hostnameless
+chainsaw test --test-dir chainsaw-test
+Version: v0.2.12
+Loading default configuration...
+- Using test file: chainsaw-test
+- TestDirs [chainsaw-test]
+- SkipDelete false
+- FailFast false
+- Namespace ''
+- FullName false
+- IncludeTestRegex ''
+- ExcludeTestRegex ''
+- ApplyTimeout 5s
+- AssertTimeout 30s
+- CleanupTimeout 30s
+- DeleteTimeout 15s
+- ErrorTimeout 30s
+- ExecTimeout 5s
+- DeletionPropagationPolicy Background
+- Template true
+- NoCluster false
+- PauseOnFailure false
+Loading tests...
+- flagger-hostnameless-test (chainsaw-test)
+Loading values...
+Running tests...
+=== RUN   chainsaw
+=== PAUSE chainsaw
+=== CONT  chainsaw
+=== RUN   chainsaw/flagger-hostnameless-test
+=== PAUSE chainsaw/flagger-hostnameless-test
+=== CONT  chainsaw/flagger-hostnameless-test
+    | 16:30:03 | flagger-hostnameless-test | @chainsaw                       | CREATE    | OK    | v1/Namespace @ chainsaw-upward-fly
+    | 16:30:03 | flagger-hostnameless-test | create-gateway                  | TRY       | BEGIN |
+    | 16:30:03 | flagger-hostnameless-test | create-gateway                  | APPLY     | RUN   | gateway.networking.k8s.io/v1/Gateway @ chainsaw-upward-fly/eg
+    | 16:30:03 | flagger-hostnameless-test | create-gateway                  | CREATE    | OK    | gateway.networking.k8s.io/v1/Gateway @ chainsaw-upward-fly/eg
+    | 16:30:03 | flagger-hostnameless-test | create-gateway                  | APPLY     | DONE  | gateway.networking.k8s.io/v1/Gateway @ chainsaw-upward-fly/eg
+    | 16:30:03 | flagger-hostnameless-test | create-gateway                  | ASSERT    | RUN   | gateway.networking.k8s.io/v1/Gateway @ chainsaw-upward-fly/eg
+    | 16:30:14 | flagger-hostnameless-test | create-gateway                  | ASSERT    | DONE  | gateway.networking.k8s.io/v1/Gateway @ chainsaw-upward-fly/eg
+    | 16:30:14 | flagger-hostnameless-test | create-gateway                  | TRY       | END   |
+    | 16:30:14 | flagger-hostnameless-test | create-deployment               | TRY       | BEGIN |
+    | 16:30:14 | flagger-hostnameless-test | create-deployment               | APPLY     | RUN   | apps/v1/Deployment @ chainsaw-upward-fly/podinfo
+    | 16:30:14 | flagger-hostnameless-test | create-deployment               | CREATE    | OK    | apps/v1/Deployment @ chainsaw-upward-fly/podinfo
+    | 16:30:14 | flagger-hostnameless-test | create-deployment               | APPLY     | DONE  | apps/v1/Deployment @ chainsaw-upward-fly/podinfo
+    | 16:30:14 | flagger-hostnameless-test | create-deployment               | ASSERT    | RUN   | apps/v1/Deployment @ chainsaw-upward-fly/podinfo
+    | 16:30:26 | flagger-hostnameless-test | create-deployment               | ASSERT    | DONE  | apps/v1/Deployment @ chainsaw-upward-fly/podinfo
+    | 16:30:26 | flagger-hostnameless-test | create-deployment               | TRY       | END   |
+    | 16:30:26 | flagger-hostnameless-test | create-canary                   | TRY       | BEGIN |
+    | 16:30:26 | flagger-hostnameless-test | create-canary                   | APPLY     | RUN   | flagger.app/v1beta1/Canary @ chainsaw-upward-fly/podinfo
+    | 16:30:26 | flagger-hostnameless-test | create-canary                   | CREATE    | OK    | flagger.app/v1beta1/Canary @ chainsaw-upward-fly/podinfo
+    | 16:30:26 | flagger-hostnameless-test | create-canary                   | APPLY     | DONE  | flagger.app/v1beta1/Canary @ chainsaw-upward-fly/podinfo
+    | 16:30:26 | flagger-hostnameless-test | create-canary                   | ASSERT    | RUN   | flagger.app/v1beta1/Canary @ chainsaw-upward-fly/podinfo
+    | 16:30:51 | flagger-hostnameless-test | create-canary                   | ASSERT    | DONE  | flagger.app/v1beta1/Canary @ chainsaw-upward-fly/podinfo
+    | 16:30:51 | flagger-hostnameless-test | create-canary                   | ASSERT    | RUN   | gateway.networking.k8s.io/v1/HTTPRoute @ chainsaw-upward-fly/podinfo
+    | 16:30:51 | flagger-hostnameless-test | create-canary                   | ASSERT    | DONE  | gateway.networking.k8s.io/v1/HTTPRoute @ chainsaw-upward-fly/podinfo
+    | 16:30:51 | flagger-hostnameless-test | create-canary                   | TRY       | END   |
+    | 16:30:51 | flagger-hostnameless-test | check-http-request              | TRY       | BEGIN |
+    | 16:30:51 | flagger-hostnameless-test | check-http-request              | CMD       | RUN   |
+        === COMMAND
+        /nix/store/3z1jypscq2ld48kl089ywgwd8ri2rjxq-bash-5.2p37/bin/sh -c set -eux
+        # Get service name
+        SERVICE_NAME=$(kubectl get service -n envoy-gateway-system -l gateway.envoyproxy.io/owning-gateway-namespace=$NAMESPACE -o jsonpath='{.items[0].metadata.name}')
+        echo "Service name: ${SERVICE_NAME}"
+        
+        # Send HTTP request using curl (-v option for detailed logs)
+        kubectl run curl-test --image=curlimages/curl --restart=Never -i --rm -n $NAMESPACE -- \
+          curl -v http://${SERVICE_NAME}.envoy-gateway-system.svc.cluster.local
+    | 16:30:55 | flagger-hostnameless-test | check-http-request              | SCRIPT    | LOG   |
+        === STDOUT
+        Service name: envoy-chainsaw-upward-fly-eg-181208fb
+          % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                         Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0* Host envoy-chainsaw-upward-fly-eg-181208fb.envoy-gateway-system.svc.cluster.local:80 was resolved.
+        * IPv6: (none)
+        * IPv4: 10.96.49.7
+        *   Trying 10.96.49.7:80...
+        * Connected to envoy-chainsaw-upward-fly-eg-181208fb.envoy-gateway-system.svc.cluster.local (10.96.49.7) port 80
+        * using HTTP/1.x
+        > GET / HTTP/1.1
+        > Host: envoy-chainsaw-upward-fly-eg-181208fb.envoy-gateway-system.svc.cluster.local
+        > User-Agent: curl/8.13.0
+        > Accept: */*
+        > 
+        * Request completely sent off
+        {
+          "hostname": "podinfo-primary-7676b9b68-w7sbj",
+          "version": "6.0.0",
+          "revision": "",
+          "color": "#34577c",
+          "logo": "https://raw.githubusercontent.com/stefanprodan/podinfo/gh-pages/cuddle_clap.gif",
+          "message": "greetings from podinfo v6.0.0",
+          "goos": "linux",
+          "goarch": "arm64",
+          "runtime": "go1.16.5",
+          "num_goroutine": "6",
+          "num_cpu": "12"
+        < HTTP/1.1 200 OK
+        < content-type: application/json; charset=utf-8
+        < x-content-type-options: nosniff
+        < date: Tue, 15 Apr 2025 07:30:53 GMT
+        < content-length: 360
+        < 
+        { [360 bytes data]
+100   360  100   360    0     0   167k      0 --:--:-- --:--:-- --:--:--  175k
+        * Connection #0 to host envoy-chainsaw-upward-fly-eg-181208fb.envoy-gateway-system.svc.cluster.local left intact
+        }pod "curl-test" deleted
+        === STDERR
+        ++ kubectl get service -n envoy-gateway-system -l gateway.envoyproxy.io/owning-gateway-namespace=chainsaw-upward-fly -o 'jsonpath={.items[0].metadata.name}'
+        + SERVICE_NAME=envoy-chainsaw-upward-fly-eg-181208fb
+        + echo 'Service name: envoy-chainsaw-upward-fly-eg-181208fb'
+        + kubectl run curl-test --image=curlimages/curl --restart=Never -i --rm -n chainsaw-upward-fly -- curl -v http://envoy-chainsaw-upward-fly-eg-181208fb.envoy-gateway-system.svc.cluster.local
+    | 16:30:55 | flagger-hostnameless-test | check-http-request              | SCRIPT    | DONE  |
+    | 16:30:55 | flagger-hostnameless-test | check-http-request              | TRY       | END   |
+    | 16:30:55 | flagger-hostnameless-test | update-deployment               | TRY       | BEGIN |
+    | 16:30:55 | flagger-hostnameless-test | update-deployment               | PATCH     | RUN   | apps/v1/Deployment @ chainsaw-upward-fly/podinfo
+    | 16:30:55 | flagger-hostnameless-test | update-deployment               | PATCH     | OK    | apps/v1/Deployment @ chainsaw-upward-fly/podinfo
+    | 16:30:55 | flagger-hostnameless-test | update-deployment               | PATCH     | DONE  | apps/v1/Deployment @ chainsaw-upward-fly/podinfo
+    | 16:30:55 | flagger-hostnameless-test | update-deployment               | ASSERT    | RUN   | apps/v1/Deployment @ chainsaw-upward-fly/podinfo
+    | 16:30:55 | flagger-hostnameless-test | update-deployment               | ASSERT    | DONE  | apps/v1/Deployment @ chainsaw-upward-fly/podinfo
+    | 16:30:55 | flagger-hostnameless-test | update-deployment               | TRY       | END   |
+    | 16:30:55 | flagger-hostnameless-test | check-canary-status             | TRY       | BEGIN |
+    | 16:30:55 | flagger-hostnameless-test | check-canary-status             | ASSERT    | RUN   | flagger.app/v1beta1/Canary @ chainsaw-upward-fly/podinfo
+    | 16:32:21 | flagger-hostnameless-test | check-canary-status             | ASSERT    | DONE  | flagger.app/v1beta1/Canary @ chainsaw-upward-fly/podinfo
+    | 16:32:21 | flagger-hostnameless-test | check-canary-status             | TRY       | END   |
+    | 16:32:21 | flagger-hostnameless-test | check-http-request-after-update | TRY       | BEGIN |
+    | 16:32:21 | flagger-hostnameless-test | check-http-request-after-update | CMD       | RUN   |
+        === COMMAND
+        /nix/store/3z1jypscq2ld48kl089ywgwd8ri2rjxq-bash-5.2p37/bin/sh -c set -eux
+        # Get service name
+        SERVICE_NAME=$(kubectl get service -n envoy-gateway-system -l gateway.envoyproxy.io/owning-gateway-namespace=$NAMESPACE -o jsonpath='{.items[0].metadata.name}')
+        echo "Service name: ${SERVICE_NAME}"
+        
+        # Send HTTP request using curl (-v option for detailed logs)
+        kubectl run curl-test-after-update --image=curlimages/curl --restart=Never -i --rm -n $NAMESPACE -- \
+          curl -v http://${SERVICE_NAME}.envoy-gateway-system.svc.cluster.local
+    | 16:32:25 | flagger-hostnameless-test | check-http-request-after-update | SCRIPT    | LOG   |
+        === STDOUT
+        Service name: envoy-chainsaw-upward-fly-eg-181208fb
+          % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                         Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0* Host envoy-chainsaw-upward-fly-eg-181208fb.envoy-gateway-system.svc.cluster.local:80 was resolved.
+        * IPv6: (none)
+        * IPv4: 10.96.49.7
+        *   Trying 10.96.49.7:80...
+        * Connected to envoy-chainsaw-upward-fly-eg-181208fb.envoy-gateway-system.svc.cluster.local (10.96.49.7) port 80
+        * using HTTP/1.x
+        > GET / HTTP/1.1
+        > Host: envoy-chainsaw-upward-fly-eg-181208fb.envoy-gateway-system.svc.cluster.local
+        > User-Agent: curl/8.13.0
+        > Accept: */*
+        > 
+        * Request completely sent off
+        {
+          "hostname": "podinfo-primary-644db5464b-tbwfz",
+          "version": "6.1.0",
+          "revision": "",
+          "color": "#34577c",
+          "logo": "https://raw.githubusercontent.com/stefanprodan/podinfo/gh-pages/cuddle_clap.gif",
+        < HTTP/1.1 200 OK
+        < content-type: application/json; charset=utf-8
+        < x-content-type-options: nosniff
+        < date: Tue, 15 Apr 2025 07:32:23 GMT
+        < content-length: 361
+        < 
+        { [361 bytes data]
+100   361  100   361    0     0   157k      0 --:--:-- --:--:-- --:--:--  176k
+        * Connection #0 to host envoy-chainsaw-upward-fly-eg-181208fb.envoy-gateway-system.svc.cluster.local left intact
+          "message": "greetings from podinfo v6.1.0",
+          "goos": "linux",
+          "goarch": "arm64",
+          "runtime": "go1.17.8",
+          "num_goroutine": "6",
+          "num_cpu": "12"
+        }pod "curl-test-after-update" deleted
+        === STDERR
+        ++ kubectl get service -n envoy-gateway-system -l gateway.envoyproxy.io/owning-gateway-namespace=chainsaw-upward-fly -o 'jsonpath={.items[0].metadata.name}'
+        + SERVICE_NAME=envoy-chainsaw-upward-fly-eg-181208fb
+        + echo 'Service name: envoy-chainsaw-upward-fly-eg-181208fb'
+        + kubectl run curl-test-after-update --image=curlimages/curl --restart=Never -i --rm -n chainsaw-upward-fly -- curl -v http://envoy-chainsaw-upward-fly-eg-181208fb.envoy-gateway-system.svc.cluster.local
+    | 16:32:25 | flagger-hostnameless-test | check-http-request-after-update | SCRIPT    | DONE  |
+    | 16:32:25 | flagger-hostnameless-test | check-http-request-after-update | TRY       | END   |
+    | 16:32:25 | flagger-hostnameless-test | create-canary                   | CLEANUP   | BEGIN |
+    | 16:32:25 | flagger-hostnameless-test | create-canary                   | DELETE    | OK    | flagger.app/v1beta1/Canary @ chainsaw-upward-fly/podinfo
+    | 16:32:25 | flagger-hostnameless-test | create-canary                   | CLEANUP   | END   |
+    | 16:32:25 | flagger-hostnameless-test | create-deployment               | CLEANUP   | BEGIN |
+    | 16:32:25 | flagger-hostnameless-test | create-deployment               | DELETE    | OK    | apps/v1/Deployment @ chainsaw-upward-fly/podinfo
+    | 16:32:25 | flagger-hostnameless-test | create-deployment               | CLEANUP   | END   |
+    | 16:32:25 | flagger-hostnameless-test | create-gateway                  | CLEANUP   | BEGIN |
+    | 16:32:25 | flagger-hostnameless-test | create-gateway                  | DELETE    | OK    | gateway.networking.k8s.io/v1/Gateway @ chainsaw-upward-fly/eg
+    | 16:32:25 | flagger-hostnameless-test | create-gateway                  | CLEANUP   | END   |
+    | 16:32:25 | flagger-hostnameless-test | @chainsaw                       | CLEANUP   | BEGIN |
+    | 16:32:25 | flagger-hostnameless-test | @chainsaw                       | DELETE    | OK    | v1/Namespace @ chainsaw-upward-fly
+    | 16:32:30 | flagger-hostnameless-test | @chainsaw                       | CLEANUP   | END   |
+--- PASS: chainsaw (0.00s)
+    --- PASS: chainsaw/flagger-hostnameless-test (147.02s)
+PASS
+Tests Summary...
+- Passed  tests 1
+- Failed  tests 0
+- Skipped tests 0
+Done.

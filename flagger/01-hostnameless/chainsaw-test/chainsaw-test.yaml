@@ -1,0 +1,127 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/kyverno/chainsaw/main/.schemas/json/test-chainsaw-v1alpha1.json
+apiVersion: chainsaw.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: flagger-hostnameless-test
+spec:
+  steps:
+    # Create Gateway
+    - name: create-gateway
+      try:
+        - apply:
+            file: gateway.yaml
+        - assert:
+            resource:
+              apiVersion: gateway.networking.k8s.io/v1
+              kind: Gateway
+              metadata:
+                name: eg
+              (status.conditions[?type == 'Programmed']|[0].status): "True"
+    # Initial deployment
+    - name: create-deployment
+      try:
+        - apply:
+            file: deployment.yaml
+        - assert:
+            resource:
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: podinfo
+              (status.conditions[?type == 'Available']|[0].status): "True"
+    # Create Canary
+    - name: create-canary
+      try:
+        - apply:
+            file: canary.yaml
+        - assert:
+            resource:
+              apiVersion: flagger.app/v1beta1
+              kind: Canary
+              metadata:
+                name: podinfo
+              (status.phase): Initialized
+        - assert:
+            resource:
+              apiVersion: gateway.networking.k8s.io/v1
+              kind: HTTPRoute
+              metadata:
+                name: podinfo
+              (status.parents[0].conditions[?type == 'Accepted']|[0].status): "True"
+    # Send HTTP request
+    - name: check-http-request
+      try:
+        - script:
+            env:
+              - name: NAMESPACE
+                value: ($namespace)
+            content: |
+              set -eux
+              # Get service name
+              SERVICE_NAME=$(kubectl get service -n envoy-gateway-system -l gateway.envoyproxy.io/owning-gateway-namespace=$NAMESPACE -o jsonpath='{.items[0].metadata.name}')
+              echo "Service name: ${SERVICE_NAME}"
+
+              # Send HTTP request using curl (-v option for detailed logs)
+              kubectl run curl-test --image=curlimages/curl --restart=Never -i --rm -n $NAMESPACE -- \
+                curl -v http://${SERVICE_NAME}.envoy-gateway-system.svc.cluster.local
+            check:
+              # Verify that HTTP 200 OK is included
+              (contains($stdout, 'HTTP/1.1 200')): true
+
+    # Update Deployment image with patch
+    - name: update-deployment
+      try:
+        - patch:
+            resource:
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: podinfo
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: podinfo
+                        image: stefanprodan/podinfo:6.1.0
+        - assert:
+            resource:
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: podinfo
+              (spec.template.spec.containers[0].image): stefanprodan/podinfo:6.1.0
+              (status.conditions[?type == 'Available']|[0].status): "True"
+
+    # Check Canary status (verify that promotion process is progressing)
+    - name: check-canary-status
+      try:
+        - assert:
+            timeout: 5m
+            resource:
+              apiVersion: flagger.app/v1beta1
+              kind: Canary
+              metadata:
+                name: podinfo
+              (status.phase): Succeeded
+
+    # Check HTTP request after update
+    - name: check-http-request-after-update
+      try:
+        - script:
+            env:
+              - name: NAMESPACE
+                value: ($namespace)
+            content: |
+              set -eux
+              # Get service name
+              SERVICE_NAME=$(kubectl get service -n envoy-gateway-system -l gateway.envoyproxy.io/owning-gateway-namespace=$NAMESPACE -o jsonpath='{.items[0].metadata.name}')
+              echo "Service name: ${SERVICE_NAME}"
+
+              # Send HTTP request using curl (-v option for detailed logs)
+              kubectl run curl-test-after-update --image=curlimages/curl --restart=Never -i --rm -n $NAMESPACE -- \
+                curl -v http://${SERVICE_NAME}.envoy-gateway-system.svc.cluster.local
+            check:
+              # Verify that HTTP 200 OK is included
+              (contains($stdout, 'HTTP/1.1 200')): true
+              # "version": "6.1.0"
+              (contains($stdout, 'podinfo v6.1.0')): true

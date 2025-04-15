@@ -54,6 +54,12 @@ SealedSecret is a Kubernetes Custom Resource Definition that allows you to store
 
 1. [Scanning for New Tags in GitHub Container Registry](fluxcd/01-scanning-for-new-tags-in-github-container-registry/README.md)
 
+## Flagger
+
+Flagger is a progressive delivery operator for Kubernetes that automates canary releases, A/B testing, and blue/green deployments.
+
+1. [Hostnameless Canary Deployment](flagger/01-hostnameless/README.md) - Learn how to implement canary deployments without specifying the hosts field when integrating with Gateway API.
+
 ## Helm
 
 1. [Host Chart on Private GitHub Repository](helm/01-host-chart-on-private-github-repository/README.md) - Learn how to host and manage private Helm charts using a GitHub repository.

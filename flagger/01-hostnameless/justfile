@@ -1,0 +1,52 @@
+# Default command (displayed when run without arguments)
+default:
+    @just --list
+
+# Create Kind cluster
+create-cluster:
+    kind create cluster
+
+# Delete Kind cluster
+delete-cluster:
+    kind delete cluster
+
+# Install Gateway API
+install-gateway-api:
+    kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.0/standard-install.yaml
+
+# Install Cert Manager
+install-cert-manager:
+    kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.17.0/cert-manager.yaml
+    kubectl wait --for=condition=available --timeout=60s deployment/cert-manager -n cert-manager
+    kubectl wait --for=condition=available --timeout=60s deployment/cert-manager-webhook -n cert-manager
+    kubectl wait --for=condition=available --timeout=60s deployment/cert-manager-cainjector -n cert-manager
+
+# Install Envoy Gateway
+install-envoy-gateway: install-cert-manager
+    kubectl apply --server-side -f https://github.com/envoyproxy/gateway/releases/download/latest/install.yaml
+    kubectl wait --for=condition=available --timeout=600s deployment/envoy-gateway -n envoy-gateway-system
+    kubectl apply -f configs/gatewayclass.yaml
+
+# Install Flagger
+install-flagger:
+    kubectl apply -f https://raw.githubusercontent.com/fluxcd/flagger/main/artifacts/flagger/crd.yaml
+    kubectl create ns flagger-system
+    helm repo add flagger https://flagger.app
+    helm upgrade -i flagger flagger/flagger \
+      --namespace flagger-system \
+      --set prometheus.install=false \
+      --set meshProvider=gatewayapi:v1 \
+      --set metricsServer=none
+
+# Install all components
+install-all: install-gateway-api install-envoy-gateway install-flagger
+
+# Complete environment setup (create cluster + install all)
+setup: create-cluster install-all
+
+# Cleanup everything
+cleanup: delete-cluster
+
+# Run Chainsaw test
+test-hostnameless:
+    chainsaw test --test-dir chainsaw-test
