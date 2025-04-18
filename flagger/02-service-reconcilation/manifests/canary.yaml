@@ -1,0 +1,21 @@
+apiVersion: flagger.app/v1beta1
+kind: Canary
+metadata:
+  name: podinfo
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: podinfo
+  progressDeadlineSeconds: 60
+  service:
+    port: 9898
+    targetPort: 9898
+    gatewayRefs:
+      - name: eg
+        namespace: default
+  analysis:
+    interval: 1s
+    threshold: 5
+    maxWeight: 50
+    stepWeight: 10

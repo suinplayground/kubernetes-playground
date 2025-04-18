@@ -59,6 +59,7 @@ SealedSecret is a Kubernetes Custom Resource Definition that allows you to store
 Flagger is a progressive delivery operator for Kubernetes that automates canary releases, A/B testing, and blue/green deployments.
 
 1. [Hostnameless Canary Deployment](flagger/01-hostnameless/README.md) - Learn how to implement canary deployments without specifying the hosts field when integrating with Gateway API.
+2. [Service Reconciliation](flagger/02-service-reconcilation/README.md) - Investigate how Flagger manages services with names different from their deployments.
 
 ## Helm
 
