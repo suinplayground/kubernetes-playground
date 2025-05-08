@@ -87,6 +87,10 @@ external-secrets is a Kubernetes operator that integrates external secret manage
 1. [Sync Kubernetes Secrets to AWS Secrets Manager](external-secrets/01-push-secret/README.md) - Learn how to use PushSecret to synchronize Kubernetes Secrets to AWS Secrets Manager.
 2. [Push Secrets to Another Kubernetes Cluster](external-secrets/02-push-secrets-kube/README.md) - Learn how to push secrets to another Kubernetes cluster.
 
+## Envoy
+
+1. [GatewayNamespace Mode Fails to Handle Gateways Across Multiple Namespaces](envoy/02-gateway-namespace/README.md) - Investigate an issue where Envoy Gateway's GatewayNamespace mode incorrectly creates resources in the wrong namespace.
+
 ## Tear down
 
 Delete the cluster:

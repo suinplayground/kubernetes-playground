@@ -1,0 +1,60 @@
+# Default command (displayed when run without arguments)
+default:
+    @just --list
+
+# Create Kind cluster
+create-cluster:
+    kind create cluster
+
+# Delete Kind cluster
+delete-cluster:
+    kind delete cluster
+
+# Install Gateway API
+install-gateway-api version="1.2.0":
+    kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v{{version}}/standard-install.yaml
+
+# Install Cert Manager
+install-cert-manager version="1.17.1":
+    kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v{{version}}/cert-manager.yaml
+    kubectl wait --for=condition=available --timeout=60s deployment/cert-manager -n cert-manager
+    kubectl wait --for=condition=available --timeout=60s deployment/cert-manager-webhook -n cert-manager
+    kubectl wait --for=condition=available --timeout=60s deployment/cert-manager-cainjector -n cert-manager
+
+# Install Envoy Gateway
+# install-envoy-gateway version="1.4.0-rc.2": install-cert-manager
+install-envoy-gateway version="0.0.0-latest": install-cert-manager
+    helm install eg oci://docker.io/envoyproxy/gateway-helm --version v{{version}} -n envoy-gateway-system --create-namespace \
+        --set config.envoyGateway.provider.kubernetes.deploy.type=GatewayNamespace
+    kubectl wait --for=condition=available --timeout=600s deployment/envoy-gateway -n envoy-gateway-system
+
+# Install all components
+install-all: install-gateway-api install-envoy-gateway
+
+# Create GatewayClass and Gateway
+create-gateway:
+    kubectl apply -f manifests/gatewayclass.yaml
+    kubectl wait --for=condition=accepted --timeout=60s gatewayclass/eg
+
+    kubectl apply -f manifests/namespace.yaml
+    kubectl wait --for=jsonpath='{.status.phase}'=Active --timeout=60s namespace/ns1
+    kubectl wait --for=jsonpath='{.status.phase}'=Active --timeout=60s namespace/ns2
+
+    kubectl apply -f manifests/gateway.yaml
+    sleep 30
+
+    kubectl get gateway -A
+
+    kubectl get pod -n ns1
+
+    kubectl get pod -n ns2
+
+# Complete environment setup (create cluster + install all)
+setup: create-cluster install-all
+
+# Cleanup everything
+cleanup: delete-cluster
+
+# Run Chainsaw test
+test-hostnameless:
+    chainsaw test --test-dir chainsaw-test
