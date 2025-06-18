@@ -1,0 +1,71 @@
+# patch.yml
+- name: containerd-customization
+  description: "Customize containerd with mirror, debug, and restart"
+  definitions:
+  - selector:
+      apiVersion: controlplane.cluster.x-k8s.io/v1beta1
+      kind: KubeadmControlPlaneTemplate
+      matchResources:
+        controlPlane: true
+    jsonPatches:
+    - op: add
+      path: /spec/template/spec/kubeadmConfigSpec/preKubeadmCommands
+      value:
+      - |
+        # The one script to rule them all
+        set -e
+
+        # 1. Create hosts.toml for mirror
+        mkdir -p /etc/containerd/certs.d/docker.io
+        cat <<EOF > /etc/containerd/certs.d/docker.io/hosts.toml
+        server = "https://docker.io"
+        [host."https://mirror.gcr.io"]
+          capabilities = ["pull", "resolve"]
+        EOF
+
+        # 2. Add debug config idempotently
+        if ! grep -q '\[debug\]' /etc/containerd/config.toml; then
+          sed -i '/version = 2/a [debug]\n  level = "debug"' /etc/containerd/config.toml
+        fi
+
+        # 3. Add registry config_path idempotently (The final piece!)
+        if ! grep -q 'config_path = "/etc/containerd/certs.d"' /etc/containerd/config.toml; then
+          printf '\n[plugins."io.containerd.grpc.v1.cri".registry]\n  config_path = "/etc/containerd/certs.d"\n' >> /etc/containerd/config.toml
+        fi
+
+        # 4. Restart containerd to apply all changes
+        systemctl restart containerd
+  - selector:
+      apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
+      kind: KubeadmConfigTemplate
+      matchResources:
+        machineDeploymentClass:
+          names: ["default-worker"]
+    jsonPatches:
+    - op: add
+      path: /spec/template/spec/preKubeadmCommands
+      value:
+      - |
+        # The one script to rule them all
+        set -e
+
+        # 1. Create hosts.toml for mirror
+        mkdir -p /etc/containerd/certs.d/docker.io
+        cat <<EOF > /etc/containerd/certs.d/docker.io/hosts.toml
+        server = "https://docker.io"
+        [host."https://mirror.gcr.io"]
+          capabilities = ["pull", "resolve"]
+        EOF
+
+        # 2. Add debug config idempotently
+        if ! grep -q '\[debug\]' /etc/containerd/config.toml; then
+          sed -i '/version = 2/a [debug]\n  level = "debug"' /etc/containerd/config.toml
+        fi
+
+        # 3. Add registry config_path idempotently (The final piece!)
+        if ! grep -q 'config_path = "/etc/containerd/certs.d"' /etc/containerd/config.toml; then
+          printf '\n[plugins."io.containerd.grpc.v1.cri".registry]\n  config_path = "/etc/containerd/certs.d"\n' >> /etc/containerd/config.toml
+        fi
+
+        # 4. Restart containerd to apply all changes
+        systemctl restart containerd

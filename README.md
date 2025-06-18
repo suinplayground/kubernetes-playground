@@ -42,6 +42,7 @@ The [crossplane](crossplane) directory contains a collection of examples that de
 
 1. [Docker Provider (CAPD)](cluster-api/01-capd/README.md)
 2. [Testing Helm Chart Distribution](cluster-api/02-helm-chart-proxy/README.md)
+3. [Using Registry Mirror to Avoid Docker Hub Rate Limits](cluster-api/03-registry-mirror/README.md)
 
 ## SealedSecret
 

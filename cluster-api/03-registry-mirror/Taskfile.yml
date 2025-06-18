@@ -1,0 +1,177 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: "3"
+
+vars:
+  management_name: management
+  workload_name: workload
+
+tasks:
+  demo:
+    desc: Run the demo
+    cmds:
+      - task management:cluster:up
+      - task management:mirrored?
+      - task management:capi:install
+      - sleep 30
+      - task workload:cluster:up
+      - sleep 60
+      - task workload:kubeconfig:add
+      - task workload:mirrored?
+      - task workload:cni:install
+  
+  cleanup:
+    desc: Cleanup the demo
+    cmds:
+      - kind delete cluster --name {{.management_name}}
+      - kind delete cluster --name {{.workload_name}}
+
+  management:cluster:up:
+    desc: Create a management cluster using kind
+    cmd: kind create cluster --name {{.management_name}} --config kind-cluster.yaml
+    # Output example:
+    # Creating cluster "management" ...
+    #  ✓ Ensuring node image (kindest/node:v1.33.1) 🖼
+    #  ✓ Preparing nodes 📦  
+    #  ✓ Writing configuration 📜 
+    #  ✓ Starting control-plane 🕹️ 
+    #  ✓ Installing CNI 🔌 
+    #  ✓ Installing StorageClass 💾 
+    # Set kubectl context to "kind-management"
+    # You can now use your cluster with:
+    #
+    # kubectl cluster-info --context kind-management
+    #
+    # Thanks for using kind! 😊
+
+  management:cluster:down:
+    desc: Delete the management cluster
+    cmd: kind delete cluster --name {{.management_name}}
+
+  management:controlplane:login:
+    desc: Login to the management cluster control plane
+    cmd: docker exec -it {{.management_name}}-control-plane bash
+
+  management:mirrored?:
+    desc: Test if the management cluster is using a realy mirror
+    cmd: docker exec -it {{.management_name}}-control-plane bash -c 'crictl pull hello-world && journalctl -u containerd' | rg fetch | rg mirror.gcr.io
+    # Output example:
+    # Jun 18 07:31:24 management-control-plane containerd[193]: time="2025-06-18T07:31:24.774953505Z" level=debug msg="fetch response received" host=mirror.gcr.io response.header.alt-svc="h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000" response.header.content-length=12341 response.header.content-type=application/vnd.oci.image.index.v1+json response.header.date="Wed, 18 Jun 2025 07:31:24 GMT" response.header.docker-content-digest="sha256:940c619fbd418f9b2b1b63e25d8861f9cc1b46e3fc8b018ccfe8b78f19b8cc4f" response.header.docker-distribution-api-version=registry/2.0 response.status="200 OK" url="https://mirror.gcr.io/v2/library/hello-world/manifests/latest?ns=docker.io"
+
+  management:capi:install:
+    desc: Install Cluster API components
+    cmd: clusterctl init --infrastructure docker
+    env:
+      CLUSTER_TOPOLOGY: true
+    # Output example:
+    # Fetching providers
+    # Installing cert-manager version="v1.17.2"
+    # Waiting for cert-manager to be available...
+    # Installing provider="cluster-api" version="v1.10.3" targetNamespace="capi-system"
+    # Installing provider="bootstrap-kubeadm" version="v1.10.3" targetNamespace="capi-kubeadm-bootstrap-system"
+    # Installing provider="control-plane-kubeadm" version="v1.10.3" targetNamespace="capi-kubeadm-control-plane-system"
+    # Installing provider="infrastructure-docker" version="v1.10.3" targetNamespace="capd-system"
+    #
+    # Your management cluster has been initialized successfully!
+    #
+    # You can now create your first workload cluster by running the following:
+    #
+    #   clusterctl generate cluster [name] --kubernetes-version [version] | kubectl apply -f -
+  
+  management:capi:status:
+    desc: Check the status of the management cluster
+    cmd: kubectl get deploy -l clusterctl.cluster.x-k8s.io="" -A
+
+  workload:cluster:up:
+    desc: Create a workload cluster
+    cmd: |-
+      clusterctl generate cluster {{.workload_name}} \
+        --flavor development \
+        --kubernetes-version v1.33.1 \
+        --control-plane-machine-count=1 \
+        --worker-machine-count=1 \
+        | yq \
+        | tee workload.original.yaml \
+        | yq 'select(.kind == "ClusterClass").spec.patches += load("patch.yaml")' \
+        | tee workload.patched.yaml \
+        | kubectl apply -f -
+    # Output example:
+    # clusterclass.cluster.x-k8s.io/quick-start created
+    # dockerclustertemplate.infrastructure.cluster.x-k8s.io/quick-start-cluster created
+    # kubeadmcontrolplanetemplate.controlplane.cluster.x-k8s.io/quick-start-control-plane created
+    # dockermachinetemplate.infrastructure.cluster.x-k8s.io/quick-start-control-plane created
+    # dockermachinetemplate.infrastructure.cluster.x-k8s.io/quick-start-default-worker-machinetemplate created
+    # dockermachinepooltemplate.infrastructure.cluster.x-k8s.io/quick-start-default-worker-machinepooltemplate created
+    # kubeadmconfigtemplate.bootstrap.cluster.x-k8s.io/quick-start-default-worker-bootstraptemplate created
+    # cluster.cluster.x-k8s.io/workload created
+
+  workload:cluster:down:
+    desc: Destroy a workload cluster
+    cmds:
+      - kubectl delete cluster {{.workload_name}}
+      - kubectl delete KubeadmControlPlaneTemplate quick-start-control-plane
+      - kubectl delete KubeadmConfigTemplate quick-start-default-worker-bootstraptemplate
+      - kubectl delete DockerMachineTemplate quick-start-control-plane quick-start-default-worker-machinetemplate
+      - kubectl delete DockerClusterTemplate quick-start-cluster
+      - kubectl delete DockerMachinePoolTemplate quick-start-default-worker-machinepooltemplate
+
+  workload:kubeconfig:add:
+    desc: Add the kubeconfig for the workload cluster to the KUBECONFIG environment variable
+    cmds:
+      # `clusterctl get kubeconfig`` does not work with kind, since port number is different from docker exposed port
+      - kind get kubeconfig --name {{.workload_name}} > /tmp/kubeconfig.tmp.yaml 
+      - KUBECONFIG=/tmp/kubeconfig.tmp.yaml:$KUBECONFIG kubectl config view --flatten > /tmp/kubeconfig
+      - mv /tmp/kubeconfig $KUBECONFIG
+      - rm /tmp/kubeconfig.tmp.yaml
+
+  workload:cni:install:
+    desc: Install a CNI plugin
+    cmds:
+      - kubectl --context=kind-{{.workload_name}} apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.27.0/manifests/calico.yaml
+    # Output example:
+    # poddisruptionbudget.policy/calico-kube-controllers created
+    # serviceaccount/calico-kube-controllers created
+    # serviceaccount/calico-node created
+    # serviceaccount/calico-cni-plugin created
+    # configmap/calico-config created
+    # customresourcedefinition.apiextensions.k8s.io/bgpconfigurations.crd.projectcalico.org created
+    # customresourcedefinition.apiextensions.k8s.io/bgpfilters.crd.projectcalico.org created
+    # customresourcedefinition.apiextensions.k8s.io/bgppeers.crd.projectcalico.org created
+    # customresourcedefinition.apiextensions.k8s.io/blockaffinities.crd.projectcalico.org created
+    # customresourcedefinition.apiextensions.k8s.io/caliconodestatuses.crd.projectcalico.org created
+    # customresourcedefinition.apiextensions.k8s.io/clusterinformations.crd.projectcalico.org created
+    # customresourcedefinition.apiextensions.k8s.io/felixconfigurations.crd.projectcalico.org created
+    # customresourcedefinition.apiextensions.k8s.io/globalnetworkpolicies.crd.projectcalico.org created
+    # customresourcedefinition.apiextensions.k8s.io/globalnetworksets.crd.projectcalico.org created
+    # customresourcedefinition.apiextensions.k8s.io/hostendpoints.crd.projectcalico.org created
+    # customresourcedefinition.apiextensions.k8s.io/ipamblocks.crd.projectcalico.org created
+    # customresourcedefinition.apiextensions.k8s.io/ipamconfigs.crd.projectcalico.org created
+    # customresourcedefinition.apiextensions.k8s.io/ipamhandles.crd.projectcalico.org created
+    # customresourcedefinition.apiextensions.k8s.io/ippools.crd.projectcalico.org created
+    # customresourcedefinition.apiextensions.k8s.io/ipreservations.crd.projectcalico.org created
+    # customresourcedefinition.apiextensions.k8s.io/kubecontrollersconfigurations.crd.projectcalico.org created
+    # customresourcedefinition.apiextensions.k8s.io/networkpolicies.crd.projectcalico.org created
+    # customresourcedefinition.apiextensions.k8s.io/networksets.crd.projectcalico.org created
+    # clusterrole.rbac.authorization.k8s.io/calico-kube-controllers created
+    # clusterrole.rbac.authorization.k8s.io/calico-node created
+    # clusterrole.rbac.authorization.k8s.io/calico-cni-plugin created
+    # clusterrolebinding.rbac.authorization.k8s.io/calico-kube-controllers created
+    # clusterrolebinding.rbac.authorization.k8s.io/calico-node created
+    # clusterrolebinding.rbac.authorization.k8s.io/calico-cni-plugin created
+    # daemonset.apps/calico-node created
+    # deployment.apps/calico-kube-controllers created
+
+  workload:mirrored?:
+    desc: Test if the workload cluster is using a realy mirror
+    cmd: |-
+      for container in $(kubectl --context=kind-{{.management_name}} get machines -o custom-columns=NAME:.metadata.name --no-headers); do
+        echo
+        echo === $container ===
+        docker exec -it $container bash -c 'crictl pull hello-world && journalctl -u containerd' | rg fetch | rg mirror.gcr.io 
+      done
+    # Output example:
+    # === workload-brlm8-bsmwh ===
+    # Jun 18 07:33:09 workload-brlm8-bsmwh containerd[400]: time="2025-06-18T07:33:09.062904012Z" level=debug msg="fetch response received" host=mirror.gcr.io response.header.alt-svc="h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000" response.header.content-length=1698 response.header.content-type=application/vnd.docker.distribution.manifest.list.v2+json response.header.date="Wed, 18 Jun 2025 07:33:09 GMT" response.header.docker-content-digest="sha256:2d38b2f9a14cf2a6f3e0381e72e2c802e6a811e5a2f61abbe413cd6d5dccba15" response.header.docker-distribution-api-version=registry/2.0 response.status="200 OK" url="https://mirror.gcr.io/v2/calico/cni/manifests/v3.27.0?ns=docker.io"
+    #
+    # === workload-md-0-x79g4-wcp9g-swxn9 ===
+    # Jun 18 07:33:12 workload-md-0-x79g4-wcp9g-swxn9 containerd[234]: time="2025-06-18T07:33:12.723959180Z" level=debug msg="fetch response received" host=mirror.gcr.io response.header.alt-svc="h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000" response.header.content-length=1698 response.header.content-type=application/vnd.docker.distribution.manifest.list.v2+json response.header.date="Wed, 18 Jun 2025 07:33:12 GMT" response.header.docker-content-digest="sha256:2d38b2f9a14cf2a6f3e0381e72e2c802e6a811e5a2f61abbe413cd6d5dccba15" response.header.docker-distribution-api-version=registry/2.0 response.status="200 OK" url="https://mirror.gcr.io/v2/calico/cni/manifests/v3.27.0?ns=docker.io"
