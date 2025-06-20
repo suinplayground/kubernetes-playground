@@ -34,11 +34,14 @@ cat > certs.d/docker.io/hosts.toml <<EOF
 server = "https://registry-1.docker.io"
 
 [host."https://mirror.gcr.io"]
+  capabilities = ["pull"]
+
+[host."https://registry-1.docker.io"]
   capabilities = ["pull", "resolve"]
 EOF
 ```
 
-このファイルは、containerdにDocker Hubイメージの取得時にまずGoogleのミラー（mirror.gcr.io）を参照し、キャッシュがなければDocker Hub本体にフォールバックするよう指示します。
+この設定は、プルと解決の操作を分離し、古いキャッシュの問題を防ぎます。mirror.gcr.ioはイメージプル（キャッシュされたイメージを活用）を処理し、registry-1.docker.ioはタグ解決とメタデータクエリを処理することで、キャッシュの古さを防ぎながら常に最新のタグ情報を取得できます。
 
 ---
 
@@ -139,8 +142,12 @@ Cluster APIでワークロードクラスタを作成する際、ノードにも
               # 1. ミラー用hosts.toml作成
               mkdir -p /etc/containerd/certs.d/docker.io
               cat <<EOF > /etc/containerd/certs.d/docker.io/hosts.toml
-              server = "https://docker.io"
+              server = "https://registry-1.docker.io"
+
               [host."https://mirror.gcr.io"]
+                capabilities = ["pull"]
+
+              [host."https://registry-1.docker.io"]
                 capabilities = ["pull", "resolve"]
               EOF
 
@@ -173,8 +180,12 @@ Cluster APIでワークロードクラスタを作成する際、ノードにも
               # 1. ミラー用hosts.toml作成
               mkdir -p /etc/containerd/certs.d/docker.io
               cat <<EOF > /etc/containerd/certs.d/docker.io/hosts.toml
-              server = "https://docker.io"
+              server = "https://registry-1.docker.io"
+
               [host."https://mirror.gcr.io"]
+                capabilities = ["pull"]
+
+              [host."https://registry-1.docker.io"]
                 capabilities = ["pull", "resolve"]
               EOF
 

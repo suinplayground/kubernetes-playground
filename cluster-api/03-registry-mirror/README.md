@@ -34,11 +34,14 @@ cat > certs.d/docker.io/hosts.toml <<EOF
 server = "https://registry-1.docker.io"
 
 [host."https://mirror.gcr.io"]
+  capabilities = ["pull"]
+
+[host."https://registry-1.docker.io"]
   capabilities = ["pull", "resolve"]
 EOF
 ```
 
-This file tells containerd to use Google's mirror as a pull-through cache for Docker Hub images. When a node tries to pull an image from Docker Hub, it will first try mirror.gcr.io, falling back to Docker Hub only if the image is not cached.
+This configuration separates pull and resolve operations to prevent stale cache issues. The mirror.gcr.io handles image pulls (leveraging cached images), while registry-1.docker.io handles tag resolution and metadata queries, ensuring you always get the latest tag information without cache staleness.
 
 ---
 
@@ -139,8 +142,12 @@ Create a `patch.yaml` file with the following content:
               # 1. Create hosts.toml for mirror
               mkdir -p /etc/containerd/certs.d/docker.io
               cat <<EOF > /etc/containerd/certs.d/docker.io/hosts.toml
-              server = "https://docker.io"
+              server = "https://registry-1.docker.io"
+
               [host."https://mirror.gcr.io"]
+                capabilities = ["pull"]
+
+              [host."https://registry-1.docker.io"]
                 capabilities = ["pull", "resolve"]
               EOF
 
@@ -173,8 +180,12 @@ Create a `patch.yaml` file with the following content:
               # 1. Create hosts.toml for mirror
               mkdir -p /etc/containerd/certs.d/docker.io
               cat <<EOF > /etc/containerd/certs.d/docker.io/hosts.toml
-              server = "https://docker.io"
+              server = "https://registry-1.docker.io"
+
               [host."https://mirror.gcr.io"]
+                capabilities = ["pull"]
+
+              [host."https://registry-1.docker.io"]
                 capabilities = ["pull", "resolve"]
               EOF
 
