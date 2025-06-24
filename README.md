@@ -44,6 +44,12 @@ The [crossplane](crossplane) directory contains a collection of examples that de
 2. [Testing Helm Chart Distribution](cluster-api/02-helm-chart-proxy/README.md)
 3. [Using Registry Mirror to Avoid Docker Hub Rate Limits](cluster-api/03-registry-mirror/README.md)
 
+## Remote Development
+
+Remote development environments allow you to run your development workloads inside Kubernetes clusters, providing consistent and isolated development experiences.
+
+1. [Kind Cluster with Container Pod](remote-dev/01-kind/README.md) - Learn how to spin up a container as an ordinary Pod inside a local "kind" Kubernetes cluster with host folder sharing.
+
 ## SealedSecret
 
 SealedSecret is a Kubernetes Custom Resource Definition that allows you to store encrypted secrets in Git.

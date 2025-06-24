@@ -1,0 +1,8 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+  - role: control-plane
+    extraMounts:
+      - hostPath: . # mac path, already shared
+        containerPath: /workspace # path inside the node
+        # mount propagation *must* stay None on macOS
