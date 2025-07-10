@@ -44,6 +44,12 @@ The [crossplane](crossplane) directory contains a collection of examples that de
 2. [Testing Helm Chart Distribution](cluster-api/02-helm-chart-proxy/README.md)
 3. [Using Registry Mirror to Avoid Docker Hub Rate Limits](cluster-api/03-registry-mirror/README.md)
 
+## Controller Runtime
+
+The [controller-runtime](controller-runtime) directory contains examples demonstrating advanced controller patterns and best practices for building Kubernetes controllers.
+
+1. [BatchKey Pattern for Resource Grouping](controller-runtime/01-batch-key/README.md) - Learn how to implement the BatchKey pattern for efficient resource grouping and processing, featuring job queue systems with dependency management.
+
 ## Remote Development
 
 Remote development environments allow you to run your development workloads inside Kubernetes clusters, providing consistent and isolated development experiences.

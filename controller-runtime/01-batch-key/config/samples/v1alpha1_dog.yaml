@@ -1,0 +1,60 @@
+apiVersion: pseudo-cluster-scope-key.example.com/v1alpha1
+kind: Dog
+metadata:
+  labels:
+    app.kubernetes.io/name: pseudo-cluster-scope-key
+    app.kubernetes.io/managed-by: kustomize
+  name: dog1
+spec:
+  foo: a
+---
+apiVersion: pseudo-cluster-scope-key.example.com/v1alpha1
+kind: Dog
+metadata:
+  labels:
+    app.kubernetes.io/name: pseudo-cluster-scope-key
+    app.kubernetes.io/managed-by: kustomize
+  name: dog2
+spec:
+  foo: a
+---
+apiVersion: pseudo-cluster-scope-key.example.com/v1alpha1
+kind: Dog
+metadata:
+  labels:
+    app.kubernetes.io/name: pseudo-cluster-scope-key
+    app.kubernetes.io/managed-by: kustomize
+  name: dog3
+spec:
+  foo: a
+---
+apiVersion: pseudo-cluster-scope-key.example.com/v1alpha1
+kind: Dog
+metadata:
+  labels:
+    app.kubernetes.io/name: pseudo-cluster-scope-key
+    app.kubernetes.io/managed-by: kustomize
+  name: dog4
+spec:
+  foo: b
+---
+apiVersion: pseudo-cluster-scope-key.example.com/v1alpha1
+kind: Dog
+metadata:
+  labels:
+    app.kubernetes.io/name: pseudo-cluster-scope-key
+    app.kubernetes.io/managed-by: kustomize
+  name: dog5
+spec:
+  foo: b
+---
+apiVersion: pseudo-cluster-scope-key.example.com/v1alpha1
+kind: Dog
+metadata:
+  labels:
+    app.kubernetes.io/name: pseudo-cluster-scope-key
+    app.kubernetes.io/managed-by: kustomize
+  name: dog6
+spec:
+  foo: b
+
