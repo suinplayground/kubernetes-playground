@@ -1,0 +1,54 @@
+apiVersion: stable.example.com/v1
+kind: Shirt
+metadata:
+  name: shirt-blue-small
+spec:
+  color: blue
+  size: S
+  price: 26
+status:
+  available: true
+---
+apiVersion: stable.example.com/v1
+kind: Shirt
+metadata:
+  name: shirt-blue-medium
+spec:
+  color: blue
+  size: M
+  price: 28
+status:
+  available: true
+---
+apiVersion: stable.example.com/v1
+kind: Shirt
+metadata:
+  name: shirt-red-large
+spec:
+  color: red
+  size: L
+  price: 30
+status:
+  available: false
+---
+apiVersion: stable.example.com/v1
+kind: Shirt
+metadata:
+  name: shirt-green-medium
+spec:
+  color: green
+  size: M
+  price: 27
+status:
+  available: true
+---
+apiVersion: stable.example.com/v1
+kind: Shirt
+metadata:
+  name: shirt-blue-large
+spec:
+  color: blue
+  size: L
+  price: 31
+status:
+  available: true 

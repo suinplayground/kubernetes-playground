@@ -50,6 +50,12 @@ The [controller-runtime](controller-runtime) directory contains examples demonst
 
 1. [BatchKey Pattern for Resource Grouping](controller-runtime/01-batch-key/README.md) - Learn how to implement the BatchKey pattern for efficient resource grouping and processing, featuring job queue systems with dependency management.
 
+## API Extensions
+
+The [apiextensions](apiextensions) directory contains examples demonstrating how to extend Kubernetes with custom resources and features.
+
+1. [CRD Selectable Fields](apiextensions/01-selectable-fields/README.md) - Learn how to use field selectors with Custom Resource Definitions (CRDs) in Kubernetes v1.31+ to query custom resources based on specific field values.
+
 ## Remote Development
 
 Remote development environments allow you to run your development workloads inside Kubernetes clusters, providing consistent and isolated development experiences.
